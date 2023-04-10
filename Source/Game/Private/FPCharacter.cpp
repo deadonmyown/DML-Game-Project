@@ -10,6 +10,7 @@ AFPCharacter::AFPCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	IsQuestAvailable = false;
+	Health = 100;
 
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
@@ -19,6 +20,10 @@ AFPCharacter::AFPCharacter()
 
 	Cam->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	Cam->SetRelativeLocation(FVector(35,0,60));
+
+	Inventory = CreateDefaultSubobject<UInventoryComponent>("Inventory");
+	Inventory->Capacity = 20;
+	
 }
 
 // Called when the game starts or when spawned
@@ -110,6 +115,16 @@ void AFPCharacter::QuestTest()
 		UE_LOG(LogTemp, Display, TEXT("Ur silversmith: %i"), Silversmith);
 	}
 }
+
+void AFPCharacter::UseItem(UItem* Item)
+{
+	if(Item)
+	{
+		Item->Use(this);
+		Item->OnUse(this); //bp
+	}
+}
+
 
 
 

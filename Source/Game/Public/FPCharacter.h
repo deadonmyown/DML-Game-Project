@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Item.h"
 #include "GameFramework/Character.h"
 #include "QuestMissionInfo.h"
 #include "Camera/CameraComponent.h"
@@ -31,13 +32,21 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	bool IsQuestAvailable;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UInventoryComponent* Inventory;
+
 	UPROPERTY()
 	UQuestMissionInfo * CurrentMission = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int Silversmith;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int Health;
+
 	void QuestTest();
+	UFUNCTION(BlueprintCallable, Category = "Items")
+	void UseItem(UItem* Item);
 
 private:
 	void HorizontalMovement(float input);
