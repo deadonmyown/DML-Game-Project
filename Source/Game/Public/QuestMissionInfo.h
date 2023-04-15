@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable, EditInlineNew,DefaultToInstanced)
 class GAME_API UQuestMissionInfo : public UObject
 {
 	GENERATED_BODY()
@@ -17,14 +17,22 @@ class GAME_API UQuestMissionInfo : public UObject
 public:
 	UQuestMissionInfo();
 	
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    TEnumAsByte<enum EQuestMissionGoal> MissionGoal;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+    TEnumAsByte<enum ETargetType> Target;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FString Description;
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	int MissionCurrentProgress;
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	int MissionMaxProgress;
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	int Reward;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool IsComplete;
 
 	UFUNCTION()
 	int MissionProgress(int progress);
