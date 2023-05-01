@@ -15,10 +15,12 @@ class GAME_API UQuestInfo : public UObject
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TArray<class UQuestMissionInfo*> Quests;
+	TArray<class UQuestMissionInfo*> Missions;
 	
 	UPROPERTY(BlueprintReadOnly)
-	bool IsComplete;
+	bool IsComplete = false;
 
+	UFUNCTION()
+	void QuestProgress();
 	
 };

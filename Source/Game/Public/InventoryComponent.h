@@ -26,11 +26,13 @@ public:
 	// Called every frame
 	//virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	bool AddItem(class UItem* Item);
-	bool RemoveItem(class UItem* Item);
+	bool AddItem(class AItem* Item);
+	bool RemoveItem(AItem* Item);
 
-	UPROPERTY(EditDefaultsOnly, Instanced)
-	TArray<class UItem*> DefaultsItem;
+	bool SpawnItem(class AFPCharacter* Character, class APickupableItem* Item);
+
+	UPROPERTY(EditAnywhere)
+	TArray<TSubclassOf<AItem>> DefaultsItem;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Inventory")
 	int32 Capacity;
@@ -39,7 +41,7 @@ public:
 	FOnInventoryUpdated OnInventoryUpdated;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Items")
-	TArray<class UItem*> Items;
+	TArray<AItem*> Items;
 	
 
 		

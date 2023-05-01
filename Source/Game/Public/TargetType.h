@@ -7,5 +7,8 @@
 UENUM()
 enum ETargetType
 {
+	TT_Rabbit UMETA(DisplayName = "Rabbit"),
 	TT_Deer UMETA(DisplayName = "Deer"),
+	TT_Wolf UMETA(DisplayName = "Wolf"),
+	TT_Wood UMETA(DisplayName = "Wood"),
 };

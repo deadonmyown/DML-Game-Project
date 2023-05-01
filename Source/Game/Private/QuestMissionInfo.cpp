@@ -16,7 +16,7 @@ int UQuestMissionInfo::MissionProgress(int progress)
 	if(MissionCurrentProgress >= MissionMaxProgress)
 	{
 		UE_LOG(LogTemp, Display, TEXT("Mission completed"));
-		
+		IsComplete = true;
 		return Reward;
 	}
 	return 0;

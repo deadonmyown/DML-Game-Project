@@ -3,37 +3,32 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Item.h"
 #include "Components/BoxComponent.h"
-#include "QuestMissionInfo.h"
-#include "GameFramework/Actor.h"
-#include "QuestTrigger.generated.h"
+#include "PickupableItem.generated.h"
 
-UCLASS()
-class GAME_API AQuestTrigger : public AActor
+
+UCLASS(Abstract, BlueprintType)
+class GAME_API APickupableItem : public AItem
 {
 	GENERATED_BODY()
-	
+
 public:	
 	// Sets default values for this actor's properties
-	AQuestTrigger();
+	APickupableItem();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	virtual void Use(AFPCharacter* Character) override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
+public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UBoxComponent* BoxComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UStaticMeshComponent* Mesh;
+	virtual void PickupItem(AFPCharacter* Character);
+	virtual void DropItem(AFPCharacter* Character);
 
-	UPROPERTY()
-	TArray<UQuestMissionInfo*> Missions;
-	
+	void Initialize(FText useText, UTexture2D* thumbnail, FText displayName, FText description);
+
 private:
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 

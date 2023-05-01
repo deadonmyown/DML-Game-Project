@@ -6,6 +6,7 @@
 #include "Item.h"
 #include "GameFramework/Character.h"
 #include "QuestMissionInfo.h"
+#include "Weapon.h"
 #include "Camera/CameraComponent.h"
 #include "FPCharacter.generated.h"
 
@@ -32,11 +33,17 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	bool IsQuestAvailable;
 
+	UPROPERTY(BlueprintReadOnly)
+	bool IsOverlapItem;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UInventoryComponent* Inventory;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	UQuestMissionInfo * CurrentMission = nullptr;
+
+	UPROPERTY(BlueprintReadOnly)
+	class UQuestInfo* CurrentQuest = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int Silversmith;
@@ -44,10 +51,22 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int Health;
 
-	void QuestTest();
-	UFUNCTION(BlueprintCallable, Category = "Items")
-	void UseItem(UItem* Item);
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	int DropItemMultiplier;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	AWeapon* EquippedWeapon;
+
+	void QuestTest();
+	UFUNCTION(BlueprintCallable)
+	void SetQuest(UQuestInfo* Quest);
+	
+	UFUNCTION(BlueprintCallable, Category = "Items")
+	void UseItem(AItem* Item);
+
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	UCameraComponent* Cam;
+	
 private:
 	void HorizontalMovement(float input);
 	void VerticalMovement(float input);
@@ -55,6 +74,8 @@ private:
 	void HorizontalRotation(float input);
 	void VerticalRotation(float input);
 
-	UPROPERTY(EditAnywhere, Category = "Camera")
-	UCameraComponent* Cam;
+	void Interact();
+
+	void CheckAttack();
+
 };

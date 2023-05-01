@@ -4,30 +4,33 @@
 
 #include "CoreMinimal.h"
 #include "InventoryComponent.h"
-#include "UObject/NoExportTypes.h"
+#include "GameFramework/Actor.h"
 #include "Item.generated.h"
 
 /**
  * 
  */
-UCLASS(Abstract, BlueprintType, Blueprintable, EditInlineNew,DefaultToInstanced)
-class GAME_API UItem : public UObject
+UCLASS(Abstract, BlueprintType, Blueprintable, DefaultToInstanced)
+class GAME_API AItem : public AActor
 {
 	GENERATED_BODY()
 
 public:
-	UItem();
+	AItem();
 
-	virtual UWorld* GetWorld() const {return World; };
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
-	UPROPERTY(Transient)
-	UWorld* World;
+public:	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Item")
 	FText UseText;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Item")
-	UStaticMesh* PickupMesh;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Item")
+	UStaticMeshComponent* PickupMesh;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Item", meta = (ExposeOnSpawn="true"))
 	UTexture2D* Thumbnail;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Item")
 	FText DisplayName;

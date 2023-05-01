@@ -2,6 +2,7 @@
 
 
 #include "FPCharacter.h"
+#include "PickupableItem.h"
 
 // Sets default values
 AFPCharacter::AFPCharacter()
@@ -10,6 +11,7 @@ AFPCharacter::AFPCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	IsQuestAvailable = false;
+	IsOverlapItem = false;
 	Health = 100;
 
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
@@ -49,6 +51,9 @@ void AFPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	InputComponent->BindAxis("Move Forward/Backward", this, &AFPCharacter::VerticalMovement);
 	InputComponent->BindAxis("Horizontal Rotation", this, &AFPCharacter::HorizontalRotation);
 	InputComponent->BindAxis("Vertical Rotation", this, &AFPCharacter::VerticalRotation);
+
+	InputComponent->BindAction("Interact", IE_Pressed, this, &AFPCharacter::Interact);
+	InputComponent->BindAction("LMBAction", IE_Pressed, this, &AFPCharacter::CheckAttack);
 }
 
 void AFPCharacter::HorizontalMovement(float input)
@@ -92,21 +97,34 @@ void AFPCharacter::VerticalRotation(float input)
 	}
 }
 
+void AFPCharacter::Interact()
+{
+	if(IsOverlapItem)
+	{
+		TArray<AActor*> OverlappingActors;
+		GetOverlappingActors(OverlappingActors, APickupableItem::StaticClass());
+		if(OverlappingActors.Num() > 0)
+		{
+			APickupableItem* FirstItem = Cast<APickupableItem>(OverlappingActors[0]);
+			FirstItem->PickupItem(this);
+		}
+	}
+}
+
+void AFPCharacter::CheckAttack()
+{
+	if(EquippedWeapon)
+	{
+		EquippedWeapon->Attack();
+	}
+}
+
+
+
 void AFPCharacter::QuestTest()
 {
 	if(CurrentMission != nullptr)
 	{
-		// UE_LOG(LogTemp, Display, TEXT("Mission progress:"));
-		// CurrentMission->MissionCurrentProgress += 1;
-		// UE_LOG(LogTemp, Display, TEXT("Current progress = %i"), CurrentMission->MissionCurrentProgress);
-		// UE_LOG(LogTemp, Display, TEXT("Current max = %i"), CurrentMission->MissionMaxProgress);
-		// if(CurrentMission->MissionCurrentProgress >= CurrentMission->MissionMaxProgress)
-		// {
-		// 	Silversmith += CurrentMission->Reward;
-		// 	CurrentMission = nullptr;
-		// 	UE_LOG(LogTemp, Display, TEXT("Mission completed"));
-		// 	UE_LOG(LogTemp, Display, TEXT("Ur silversmith: %i"), Silversmith);
-		// }
 		if(const int Reward = CurrentMission->MissionProgress(1); Reward != 0)
 		{
 			Silversmith += Reward;
@@ -116,7 +134,15 @@ void AFPCharacter::QuestTest()
 	}
 }
 
-void AFPCharacter::UseItem(UItem* Item)
+void AFPCharacter::SetQuest(UQuestInfo* Quest)
+{
+	CurrentQuest = Quest;
+
+	//TODO: Update UI and maybe implementation of QuestComponent.
+}
+
+
+void AFPCharacter::UseItem(AItem* Item)
 {
 	if(Item)
 	{

@@ -3,14 +3,24 @@
 
 #include "Item.h"
 
-UItem::UItem()
+AItem::AItem()
 {
 	Description = FText::FromString("Description");
 	DisplayName = FText::FromString("Item");
 	UseText = FText::FromString("Use");
 }
 
-void UItem::Use(AFPCharacter* Character)
+void AItem::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+void AItem::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}
+
+void AItem::Use(AFPCharacter* Character)
 {
 }
 

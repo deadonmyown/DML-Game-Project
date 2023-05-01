@@ -4,7 +4,7 @@
 #include "FoodItem.h"
 #include "FPCharacter.h"
 
-void UFoodItem::Use(AFPCharacter* Character)
+void AFoodItem::Use(AFPCharacter* Character)
 {
 	if(Character)
 	{

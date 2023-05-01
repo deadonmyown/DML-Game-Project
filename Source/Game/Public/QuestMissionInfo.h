@@ -32,7 +32,7 @@ public:
 	int Reward;
 
 	UPROPERTY(BlueprintReadOnly)
-	bool IsComplete;
+	bool IsComplete = false;
 
 	UFUNCTION()
 	int MissionProgress(int progress);

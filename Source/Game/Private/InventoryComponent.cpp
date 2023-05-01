@@ -2,7 +2,9 @@
 
 
 #include "InventoryComponent.h"
-#include "Item.h"
+#include "FPCharacter.h"
+#include "PickupableItem.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UInventoryComponent::UInventoryComponent()
@@ -22,12 +24,12 @@ void UInventoryComponent::BeginPlay()
 
 	for(auto& Item : DefaultsItem)
 	{
-		AddItem(Item);
+		AddItem(Item.GetDefaultObject());
 	}
 	
 }
 
-bool UInventoryComponent::AddItem(UItem* Item)
+bool UInventoryComponent::AddItem(AItem* Item)
 {
 	if(Items.Num() >= Capacity || !Item)
 	{
@@ -35,8 +37,6 @@ bool UInventoryComponent::AddItem(UItem* Item)
 	}
 
 	Item->OwningInventory = this;
-	Item->World = GetWorld();
-	
 	Items.Add(Item);
 
 	//Update UI
@@ -44,11 +44,10 @@ bool UInventoryComponent::AddItem(UItem* Item)
 	return true;
 }
 
-bool UInventoryComponent::RemoveItem(UItem* Item)
+bool UInventoryComponent::RemoveItem(AItem* Item)
 {
 	if(Item)
 	{
-		Item->World = nullptr;
 		Item->OwningInventory = nullptr;
 		Items.RemoveSingle(Item);
 		OnInventoryUpdated.Broadcast();
@@ -58,14 +57,27 @@ bool UInventoryComponent::RemoveItem(UItem* Item)
 	return false;
 }
 
-
-
-
-// Called every frame
-/*void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+bool UInventoryComponent::SpawnItem(AFPCharacter* Character, APickupableItem* Item)
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-}*/
+	if(Item->GetWorld())
+	{
+		Item->DropItem(Character);
+		return true;
+	}
+	UWorld* const world = GetWorld();
+	UClass* const actorClassToSpawn = Item->GetClass();
+	if (world && actorClassToSpawn)
+	{
+		FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
+		SpawnParameters.Template = Item;
+		APickupableItem* const spawned = GetWorld()->SpawnActor<APickupableItem>(actorClassToSpawn,  Character->GetActorLocation() +
+			Character->GetActorForwardVector() * Character->DropItemMultiplier, FRotator::ZeroRotator, SpawnParameters);
+		if(spawned)
+		{
+			spawned->Initialize(Item->UseText, Item->Thumbnail, Item->DisplayName, Item->Description);
+			return true;
+		}
+	}
+	return false;
+}
 

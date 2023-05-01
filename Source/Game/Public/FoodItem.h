@@ -9,12 +9,16 @@
 /**
  * 
  */
-UCLASS()
-class GAME_API UFoodItem : public UItem
+UCLASS(BlueprintType)
+class GAME_API AFoodItem : public AItem
 {
 	GENERATED_BODY()
 
+public:
+	//AFoodItem();
+
 protected:
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item")
 	int Heal;
 	
