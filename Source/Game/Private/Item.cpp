@@ -24,3 +24,8 @@ void AItem::Use(AFPCharacter* Character)
 {
 }
 
+void AItem::Setup(AFPCharacter* Character)
+{
+}
+
+

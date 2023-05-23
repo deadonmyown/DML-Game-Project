@@ -29,7 +29,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FVector Position;
 
+	void SpawnItem(AFPCharacter* Character, AWeapon* Weapon);
+
 	virtual void Use(AFPCharacter* Character) override;
+	
 	virtual void PickupItem(AFPCharacter* Character) override;
 	virtual void DropItem(AFPCharacter* Character) override;
 

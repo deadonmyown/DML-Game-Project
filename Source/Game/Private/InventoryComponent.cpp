@@ -35,12 +35,45 @@ bool UInventoryComponent::AddItem(AItem* Item)
 	{
 		return false;
 	}
-
-	Item->OwningInventory = this;
-	Items.Add(Item);
-
+	
+	if(AWeapon* Weapon = Cast<AWeapon>(Item))
+	{
+		if(Weapon->GetWorld())
+		{
+			Weapon->OwningInventory = this;
+			Weapon->IsOnLevel = true;
+			Items.Add(Weapon);
+			OnInventoryUpdated.Broadcast();
+			return true;
+		}
+		AFPCharacter* Character = Cast<AFPCharacter>(GetOwner());
+		const UWorld* World = GetWorld();
+		UClass* const ActorClassToSpawn = Weapon->GetClass();
+		if (World && ActorClassToSpawn)
+		{
+			FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
+			SpawnParameters.Template = Weapon;
+			if(AWeapon* const Spawned = GetWorld()->SpawnActor<AWeapon>(ActorClassToSpawn,  Character->GetActorLocation() +
+				Character->GetActorForwardVector() * Character->DropItemMultiplier, FRotator::ZeroRotator, SpawnParameters))
+			{
+				Spawned->SetActorLocation(Character->GetActorLocation() + Character->GetActorForwardVector() * Character->DropItemMultiplier);
+				Spawned->IsOnLevel = true;
+				Spawned->OwningInventory = this;
+				Items.Add(Spawned);
+				OnInventoryUpdated.Broadcast();
+				return true;
+			}
+		}
+		return false;
+	}
+	auto* NewItem = NewObject<AItem>(GetOwner(), Item->GetClass(), Item->GetFName(), RF_NoFlags, Item);
+	
+	NewItem->OwningInventory = this;
+	Items.Add(NewItem);
+	
 	//Update UI
 	OnInventoryUpdated.Broadcast();
+	
 	return true;
 }
 
@@ -57,24 +90,19 @@ bool UInventoryComponent::RemoveItem(AItem* Item)
 	return false;
 }
 
-bool UInventoryComponent::SpawnItem(AFPCharacter* Character, APickupableItem* Item)
+bool UInventoryComponent::SpawnItem(const AFPCharacter* Character, APickupableItem* Item) const
 {
-	if(Item->GetWorld())
-	{
-		Item->DropItem(Character);
-		return true;
-	}
-	UWorld* const world = GetWorld();
-	UClass* const actorClassToSpawn = Item->GetClass();
-	if (world && actorClassToSpawn)
+	const UWorld* World = GetWorld();
+	UClass* const ActorClassToSpawn = Item->GetClass();
+	if (World && ActorClassToSpawn)
 	{
 		FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
 		SpawnParameters.Template = Item;
-		APickupableItem* const spawned = GetWorld()->SpawnActor<APickupableItem>(actorClassToSpawn,  Character->GetActorLocation() +
-			Character->GetActorForwardVector() * Character->DropItemMultiplier, FRotator::ZeroRotator, SpawnParameters);
-		if(spawned)
+		if(APickupableItem* const Spawned = GetWorld()->SpawnActor<APickupableItem>(ActorClassToSpawn,  Character->GetActorLocation() +
+			Character->GetActorForwardVector() * Character->DropItemMultiplier, FRotator::ZeroRotator, SpawnParameters))
 		{
-			spawned->Initialize(Item->UseText, Item->Thumbnail, Item->DisplayName, Item->Description);
+			Spawned->SetActorLocation(Character->GetActorLocation() + Character->GetActorForwardVector() * Character->DropItemMultiplier);
+			Spawned->IsOnLevel = true;
 			return true;
 		}
 	}

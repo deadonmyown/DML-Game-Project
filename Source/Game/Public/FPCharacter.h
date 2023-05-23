@@ -36,6 +36,9 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	bool IsOverlapItem;
 
+	UPROPERTY(BlueprintReadOnly)
+	bool IsShopAvailable;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UInventoryComponent* Inventory;
 

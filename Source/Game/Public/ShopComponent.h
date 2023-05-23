@@ -3,21 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "FPCharacter.h"
 #include "Components/ActorComponent.h"
 #include "InteractableUIInterface.h"
-#include "InventoryComponent.generated.h"
+#include "ShopComponent.generated.h"
 
-//Blueprints will bind to it to update the UI
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInventoryUpdated);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnShopUpdated);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class GAME_API UInventoryComponent : public UActorComponent, public IInteractableUIInterface
+class GAME_API UShopComponent : public UActorComponent, public IInteractableUIInterface
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	UInventoryComponent();
+	UShopComponent();
 
 protected:
 	// Called when the game starts
@@ -30,20 +30,18 @@ public:
 	virtual bool AddItem(class AItem* Item) override;
 	virtual bool RemoveItem(AItem* Item) override;
 
-	bool SpawnItem(const class AFPCharacter* Character, class APickupableItem* Item) const;
+	bool BuyItem(AFPCharacter* Character, AItem* Item);
+	bool SellItem(AFPCharacter* Character, AItem* Item);
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float Percent;
+	
 	UPROPERTY(EditAnywhere)
 	TArray<TSubclassOf<AItem>> DefaultsItem;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Inventory")
-	int32 Capacity;
-
 	UPROPERTY(BlueprintAssignable, Category = "Inventory")
-	FOnInventoryUpdated OnInventoryUpdated;
+	FOnShopUpdated OnShopUpdated;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Items")
 	TArray<AItem*> Items;
-	
-
-		
 };

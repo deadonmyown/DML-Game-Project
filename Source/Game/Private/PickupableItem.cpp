@@ -26,35 +26,31 @@ void APickupableItem::Use(AFPCharacter* Character)
 	Character->Inventory->RemoveItem(this);
 }
 
-void APickupableItem::Initialize(FText useText, UTexture2D* thumbnail, FText displayName, FText description)
-{
-	UseText = useText;
-	Thumbnail = thumbnail;
-	DisplayName = displayName;
-	Description = description;
-}
-
 
 void APickupableItem::PickupItem(AFPCharacter* Character)
 {
-	if(GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, FString::Printf(TEXT("PickupableItem added")));
-	Character->Inventory->AddItem(this);
-	PickupMesh->SetHiddenInGame(true);
-	PickupMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-	BoxComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	if(OwningInventory == nullptr)
+	{
+		if(GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, FString::Printf(TEXT("PickupableItem added")));
+		Character->Inventory->AddItem(this);
+		/*PickupMesh->SetHiddenInGame(true);
+		PickupMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+		BoxComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);*/
+		Destroy();
+	}
 }
 
 void APickupableItem::DropItem(AFPCharacter* Character)
 {
 	if(GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, FString::Printf(TEXT("PickupableItem dropped")));
-	PickupMesh->SetHiddenInGame(false);
+	/*PickupMesh->SetHiddenInGame(false);
 	PickupMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	SetActorLocation(Character->GetActorLocation() + Character->GetActorForwardVector() * Character->DropItemMultiplier);
+	SetActorLocation(Character->GetActorLocation() + Character->GetActorForwardVector() * Character->DropItemMultiplier);*/
+	Character->Inventory->SpawnItem(Character, this);
 }
-
 
 void APickupableItem::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
                                      bool bFromSweep, const FHitResult& SweepResult)

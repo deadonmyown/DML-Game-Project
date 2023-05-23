@@ -3,6 +3,7 @@
 
 #include "FPCharacter.h"
 #include "PickupableItem.h"
+#include "Vendor.h"
 
 // Sets default values
 AFPCharacter::AFPCharacter()
@@ -99,14 +100,26 @@ void AFPCharacter::VerticalRotation(float input)
 
 void AFPCharacter::Interact()
 {
+	TArray<AActor*> OverlappingActors;
 	if(IsOverlapItem)
 	{
-		TArray<AActor*> OverlappingActors;
 		GetOverlappingActors(OverlappingActors, APickupableItem::StaticClass());
 		if(OverlappingActors.Num() > 0)
 		{
 			APickupableItem* FirstItem = Cast<APickupableItem>(OverlappingActors[0]);
 			FirstItem->PickupItem(this);
+		}
+	}
+	else
+	{
+		GetOverlappingActors(OverlappingActors);
+		for(AActor* Actor : OverlappingActors)
+		{
+			AVendor* Vendor = Cast<AVendor>(Actor);
+			if(Vendor)
+			{
+				//TODO: Cho-to
+			}
 		}
 	}
 }

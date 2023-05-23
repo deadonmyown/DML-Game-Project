@@ -28,43 +28,64 @@ void AWeapon::Use(AFPCharacter* Character)
 		IsActive = false;
 		return;
 	}
-	if(GetWorld())
+	if(IsOnLevel && GetWorld())
 	{
 		PickupMesh->SetHiddenInGame(false);
 		BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		Character->EquippedWeapon = this;
+		IsActive = true;
 	}
 	else
 	{
-		UWorld* const world = Character->GetWorld();
-		UClass* const actorClassToSpawn = GetClass();
-		if (world && actorClassToSpawn)
+		SpawnItem(Character, this);
+	}
+}
+
+void AWeapon::SpawnItem(AFPCharacter* Character, AWeapon* Weapon)
+{
+	UWorld* const World = Character->GetWorld();
+	UClass* const ActorClassToSpawn = Weapon->GetClass();
+	if (World && ActorClassToSpawn)
+	{
+		FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
+		SpawnParameters.Template = Weapon;
+		if(AWeapon* const Spawned = GetWorld()->SpawnActor<AWeapon>(ActorClassToSpawn, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters))
 		{
-			FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
-			SpawnParameters.Template = this;
-			AWeapon* const spawned = GetWorld()->SpawnActor<AWeapon>(actorClassToSpawn,  FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters);
-			if(spawned)
-			{
-				spawned->Initialize(UseText, Thumbnail, DisplayName, Description);
-				spawned->AttachToActor(Character, FAttachmentTransformRules::KeepRelativeTransform);
-				spawned->SetActorRelativeLocation(Position);
-			}
+			Spawned->AttachToActor(Character, FAttachmentTransformRules::KeepRelativeTransform);
+			Spawned->AttachToComponent(Character->Cam, FAttachmentTransformRules::KeepRelativeTransform);
+			Spawned->SetActorRelativeLocation(Position);
+			Character->EquippedWeapon = Spawned;
+			Spawned->IsActive = true;
+			Spawned->IsOnLevel = true;
 		}
 	}
-	Character->EquippedWeapon = this;
-	IsActive = true;
 }
 
 void AWeapon::PickupItem(AFPCharacter* Character)
 {
-	Super::PickupItem(Character);
-	//AttachToActor(Character, FAttachmentTransformRules::KeepRelativeTransform);
-	AttachToComponent(Character->Cam, FAttachmentTransformRules::KeepRelativeTransform);
-	SetActorRelativeLocation(Position);
+	if(OwningInventory == nullptr)
+	{
+		if(GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, FString::Printf(TEXT("PickupableItem added")));
+		Character->Inventory->AddItem(this);
+		PickupMesh->SetHiddenInGame(true);
+		PickupMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+		BoxComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+		AttachToActor(Character, FAttachmentTransformRules::KeepRelativeTransform);
+		AttachToComponent(Character->Cam, FAttachmentTransformRules::KeepRelativeTransform);
+		SetActorRelativeLocation(Position);
+	}
+	
 }
 
 void AWeapon::DropItem(AFPCharacter* Character)
 {
-	Super::DropItem(Character);
+	if(GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, FString::Printf(TEXT("PickupableItem dropped")));
+	PickupMesh->SetHiddenInGame(false);
+	PickupMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	SetActorLocation(Character->GetActorLocation() + Character->GetActorForwardVector() * Character->DropItemMultiplier);
 	DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
 }
 
@@ -78,5 +99,3 @@ void AWeapon::Attack()
 			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("OverlappedActor: %s"), *Actor->GetName()));
 	}
 }
-
-

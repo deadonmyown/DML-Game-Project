@@ -3,33 +3,36 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Item.h"
-#include "Components/BoxComponent.h"
-#include "PickupableItem.generated.h"
+#include "ShopComponent.h"
+#include "GameFramework/Actor.h"
+#include "Vendr.generated.h"
 
-
-UCLASS(Abstract, BlueprintType)
-class GAME_API APickupableItem : public AItem
+UCLASS()
+class GAME_API AVendr : public AActor
 {
 	GENERATED_BODY()
-
+	
 public:	
 	// Sets default values for this actor's properties
-	APickupableItem();
+	AVendr();
 
 protected:
-	virtual void Use(AFPCharacter* Character) override;
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
-public:
+public:	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UShopComponent* Shop;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UBoxComponent* BoxComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	bool IsOnLevel = false;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UStaticMeshComponent* Mesh;
 
-	virtual void PickupItem(AFPCharacter* Character);
-	virtual void DropItem(AFPCharacter* Character);
-	
 private:
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
@@ -41,4 +44,5 @@ private:
 
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
 };

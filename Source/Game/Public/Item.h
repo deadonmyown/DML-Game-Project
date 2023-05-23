@@ -36,11 +36,14 @@ public:
 	FText DisplayName;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Item", meta = (MultiLine = true))
 	FText Description;
-
-	UPROPERTY()
-	UInventoryComponent* OwningInventory;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Item")
+	int Cost;
+	
+	IInteractableUIInterface* OwningInventory;
 
 	virtual void Use(class AFPCharacter* Character);
+
+	virtual void Setup(AFPCharacter* Character);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnUse(class AFPCharacter* Character);
