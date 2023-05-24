@@ -1,3 +1,4 @@
+/*
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
@@ -36,7 +37,7 @@ void APickupableItem::PickupItem(AFPCharacter* Character)
 		Character->Inventory->AddItem(this);
 		/*PickupMesh->SetHiddenInGame(true);
 		PickupMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-		BoxComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);*/
+		BoxComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);#1#
 		Destroy();
 	}
 }
@@ -48,7 +49,7 @@ void APickupableItem::DropItem(AFPCharacter* Character)
 	/*PickupMesh->SetHiddenInGame(false);
 	PickupMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	SetActorLocation(Character->GetActorLocation() + Character->GetActorForwardVector() * Character->DropItemMultiplier);*/
+	SetActorLocation(Character->GetActorLocation() + Character->GetActorForwardVector() * Character->DropItemMultiplier);#1#
 	Character->Inventory->SpawnItem(Character, this);
 }
 
@@ -70,4 +71,5 @@ void APickupableItem::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* 
 		player->IsOverlapItem = false;
 	}
 }
+*/
 

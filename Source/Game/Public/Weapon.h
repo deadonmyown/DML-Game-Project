@@ -1,3 +1,4 @@
+/*
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
@@ -8,7 +9,7 @@
 
 /**
  * 
- */
+ #1#
 UCLASS(Abstract, BlueprintType)
 class GAME_API AWeapon : public APickupableItem
 {
@@ -39,3 +40,4 @@ protected:
 public:
 	virtual void Attack();
 };
+*/

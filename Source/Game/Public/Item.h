@@ -1,3 +1,4 @@
+/*
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
@@ -9,7 +10,7 @@
 
 /**
  * 
- */
+ #1#
 UCLASS(Abstract, BlueprintType, Blueprintable, DefaultToInstanced)
 class GAME_API AItem : public AActor
 {
@@ -48,3 +49,4 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnUse(class AFPCharacter* Character);
 };
+*/

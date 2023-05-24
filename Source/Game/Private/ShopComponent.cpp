@@ -1,3 +1,4 @@
+/*
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
@@ -46,7 +47,7 @@ bool UShopComponent::AddItem(AItem* Item)
 			OnShopUpdated.Broadcast();
 			return true;
 		}
-	}*/
+	}#1#
 	
 	NewItem->OwningInventory = this;
 	Items.Add(NewItem);
@@ -98,6 +99,7 @@ bool UShopComponent::SellItem(AFPCharacter* Character, AItem* Item)
 	}
 	return false;
 }
+*/
 
 
 

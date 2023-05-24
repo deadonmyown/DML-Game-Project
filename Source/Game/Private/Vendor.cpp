@@ -1,3 +1,4 @@
+/*
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
@@ -69,4 +70,5 @@ void AVendor::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherAct
 		player->IsShopAvailable = false;
 	}
 }
+*/
 

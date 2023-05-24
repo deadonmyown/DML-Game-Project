@@ -2,11 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Item.h"
+#include "Engine.h"
 #include "GameFramework/Character.h"
 #include "QuestMissionInfo.h"
-#include "Weapon.h"
 #include "Camera/CameraComponent.h"
 #include "FPCharacter.generated.h"
 
@@ -22,6 +20,12 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	/** Function to collect every AutoPickup in range. */
+	void CollectAutoPickups();
+
+	/** Function to check for the closest Interactable in sight and in range. */
+	void CheckForInteractables();
 
 public:	
 	// Called every frame
@@ -39,8 +43,8 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	bool IsShopAvailable;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	UInventoryComponent* Inventory;
+	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UInventoryComponent* Inventory;*/
 
 	UPROPERTY(BlueprintReadOnly)
 	UQuestMissionInfo * CurrentMission = nullptr;
@@ -57,18 +61,22 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	int DropItemMultiplier;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	AWeapon* EquippedWeapon;
+	/*UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	AWeapon* EquippedWeapon;*/
 
 	void QuestTest();
 	UFUNCTION(BlueprintCallable)
 	void SetQuest(UQuestInfo* Quest);
 	
-	UFUNCTION(BlueprintCallable, Category = "Items")
-	void UseItem(AItem* Item);
+	/*UFUNCTION(BlueprintCallable, Category = "Items")
+	void UseItem(AItem* Item);*/
 
 	UPROPERTY(EditAnywhere, Category = "Camera")
 	UCameraComponent* Cam;
+
+	/** Collection sphere */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	USphereComponent* CollectionSphere;
 	
 private:
 	void HorizontalMovement(float input);
@@ -77,8 +85,10 @@ private:
 	void HorizontalRotation(float input);
 	void VerticalRotation(float input);
 
-	void Interact();
+	TSubclassOf<class AAutoPickup> AutoPickup; 
+	
+	/*void Interact();
 
-	void CheckAttack();
+	void CheckAttack();*/
 
 };

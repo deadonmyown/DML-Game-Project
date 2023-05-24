@@ -1,3 +1,4 @@
+/*
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
@@ -108,4 +109,5 @@ bool UInventoryComponent::SpawnItem(const AFPCharacter* Character, APickupableIt
 	}
 	return false;
 }
+*/
 

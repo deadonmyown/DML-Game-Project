@@ -1,3 +1,4 @@
+/*
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
@@ -8,7 +9,7 @@
 
 /**
  * 
- */
+ #1#
 UCLASS(BlueprintType)
 class GAME_API AFoodItem : public AItem
 {
@@ -24,3 +25,4 @@ protected:
 	
 	virtual void Use(AFPCharacter* Character) override;
 };
+*/
