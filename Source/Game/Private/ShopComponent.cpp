@@ -2,7 +2,6 @@
 
 
 #include "ShopComponent.h"
-
 #include "InventoryController.h"
 #include "InventoryGameState.h"
 

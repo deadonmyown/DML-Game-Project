@@ -22,11 +22,25 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void ReloadInventory();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void RemoveItem(FInventoryItem Item);
+
+	UFUNCTION(BlueprintCallable)
+	void UseItem(FInventoryItem Item);
+
+	UFUNCTION(BlueprintCallable)
+	bool DropItem(FInventoryItem Item);
+	
 	UFUNCTION(BlueprintCallable, Category = "Utils")
 	int32 GetInventoryWeight();
 
 	UFUNCTION(BlueprintCallable, Category = "Utils")
 	bool AddItemToInventoryByID(FName ID);
+
+	UFUNCTION(BlueprintCallable, Category = "Utils")
+	bool AddItemToInventory(FInventoryItem Item);
+	
+	FInventoryItem* FindItemByID(FName ID);
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class AInteractable* CurrentInteractable;

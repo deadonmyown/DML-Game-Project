@@ -31,6 +31,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText Description;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<class ABaseItem> BaseItem;
+	
+	/*UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TSubclassOf<class IItemFunctionalityInterface> ItemClass;*/
+
 	bool operator==(const FInventoryItem& OtherItem) const
 	{
 		if (ItemID == OtherItem.ItemID)

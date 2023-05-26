@@ -18,6 +18,8 @@ public:
 	
 	virtual void Interact_Implementation(APlayerController* Controller) override;
 
+	virtual void Use_Implementation(APlayerController* Controller) override;
+
 protected:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* PickupMesh;

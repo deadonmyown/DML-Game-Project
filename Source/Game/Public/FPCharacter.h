@@ -38,13 +38,7 @@ public:
 	bool IsQuestAvailable;
 
 	UPROPERTY(BlueprintReadOnly)
-	bool IsOverlapItem;
-
-	UPROPERTY(BlueprintReadOnly)
 	bool IsShopAvailable;
-
-	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	UInventoryComponent* Inventory;*/
 
 	UPROPERTY(BlueprintReadOnly)
 	UQuestMissionInfo * CurrentMission = nullptr;
@@ -53,23 +47,14 @@ public:
 	class UQuestInfo* CurrentQuest = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	int Silversmith;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int Health;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	int DropItemMultiplier;
 
-	/*UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	AWeapon* EquippedWeapon;*/
-
 	void QuestTest();
 	UFUNCTION(BlueprintCallable)
 	void SetQuest(UQuestInfo* Quest);
-	
-	/*UFUNCTION(BlueprintCallable, Category = "Items")
-	void UseItem(AItem* Item);*/
 
 	UPROPERTY(EditAnywhere, Category = "Camera")
 	UCameraComponent* Cam;
@@ -86,9 +71,4 @@ private:
 	void VerticalRotation(float input);
 
 	TSubclassOf<class AAutoPickup> AutoPickup; 
-	
-	/*void Interact();
-
-	void CheckAttack();*/
-
 };
