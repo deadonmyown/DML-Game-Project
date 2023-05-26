@@ -16,6 +16,11 @@ void AAutoPickup::Collect_Implementation(APlayerController* Controller)
 		Destroy();
 }
 
+void AAutoPickup::Use_Implementation(APlayerController* Controller)
+{
+	UE_LOG(LogTemp, Display, TEXT("ItemID: %s"), *ItemID.ToString());
+}
+
 FName AAutoPickup::GetItemID()
 {
 	return ItemID;

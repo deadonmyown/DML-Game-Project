@@ -22,9 +22,6 @@ AQuestTrigger::AQuestTrigger()
 void AQuestTrigger::BeginPlay()
 {
 	Super::BeginPlay();
-	// SphereComponent = CreateDefaultSubobject<USphereComponent>(FName(TEXT("CollisionComponent")));
-	// SphereComponent->SetRelativeLocation(FVector::ZeroVector);
-	// SphereComponent->SetSphereRadius(20.0f);
 }
 
 // Called every frame

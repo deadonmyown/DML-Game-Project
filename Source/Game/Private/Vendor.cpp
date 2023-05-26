@@ -1,4 +1,3 @@
-/*
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
@@ -11,13 +10,10 @@ AVendor::AVendor()
 	PrimaryActorTick.bCanEverTick = true;
 
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionComponent"));
-	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AVendor::OnOverlapBegin);
-	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &AVendor::OnOverlapEnd);
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("Mesh");
 	RootComponent = BoxComponent;
 	Mesh->SetupAttachment(BoxComponent);
 	Shop = CreateDefaultSubobject<UShopComponent>("Shop");
-
 }
 
 // Called when the game starts or when spawned
@@ -41,34 +37,20 @@ void AVendor::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
-void AVendor::BuyItem(AFPCharacter* Character, AItem* Item)
+void AVendor::BuyItem(APlayerController* PlayerController, FInventoryItem Item)
 {
-	if(Shop && Character && Item)
+	if(Controller)
 	{
-		Shop->BuyItem(Character, Item);
+		Shop->BuyItem(PlayerController, Item);
 	}
 }
 
-
-void AVendor::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AVendor::SellItem(APlayerController* PlayerController, FInventoryItem Item)
 {
-	AFPCharacter* player = Cast<AFPCharacter>(OtherActor);
-	if(player != nullptr)
+	if(Controller)
 	{
-		UE_LOG(LogTemp, Display, TEXT("overlap player begin"));
-		player->IsShopAvailable = true;
+		Shop->SellItem(PlayerController, Item);
 	}
 }
 
-
-void AVendor::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	AFPCharacter* player = Cast<AFPCharacter>(OtherActor);
-	if(player != nullptr)
-	{
-		UE_LOG(LogTemp, Display, TEXT("overlap player end"));
-		player->IsShopAvailable = false;
-	}
-}
-*/
 

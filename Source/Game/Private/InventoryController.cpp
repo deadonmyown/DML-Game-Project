@@ -8,6 +8,33 @@ AInventoryController::AInventoryController()
 	InventoryWeightLimit = 500;
 }
 
+void AInventoryController::UseItem(FInventoryItem Item)
+{
+	auto* BaseItem = Item.BaseItem.GetDefaultObject();
+	BaseItem->Use_Implementation(this);
+}
+
+bool AInventoryController::DropItem(FInventoryItem Item)
+{
+	auto* BaseItem = Item.BaseItem.GetDefaultObject();
+	
+	AFPCharacter* FPCharacter = Cast<AFPCharacter>(GetCharacter());
+	const UWorld* World = GetWorld();
+	UClass* const ActorClassToSpawn = BaseItem->GetClass();
+	if (World && ActorClassToSpawn)
+	{
+		FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
+		SpawnParameters.Template = BaseItem;
+		if(auto* Spawned = GetWorld()->SpawnActor<ABaseItem>(ActorClassToSpawn,  FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters))
+		{
+			Spawned->SetActorLocation(FPCharacter->GetActorLocation() + FPCharacter->GetActorForwardVector() * FPCharacter->DropItemMultiplier);
+			RemoveItem(Item);
+			return true;
+		}
+	}
+	return false;
+}
+
 int32 AInventoryController::GetInventoryWeight()
 {
 	int32 Weight = 0;
@@ -21,9 +48,7 @@ int32 AInventoryController::GetInventoryWeight()
 
 bool AInventoryController::AddItemToInventoryByID(FName ID)
 {
-	AInventoryGameState* GameState = Cast<AInventoryGameState>(GetWorld()->GetGameState());
-	UDataTable* ItemTable = GameState->GetItemDB();
-	FInventoryItem* ItemToAdd = ItemTable->FindRow<FInventoryItem>(ID, "");
+	FInventoryItem* ItemToAdd = FindItemByID(ID);
 
 	if (ItemToAdd)
 	{
@@ -36,6 +61,26 @@ bool AInventoryController::AddItemToInventoryByID(FName ID)
 		}
 	}
 	return false;
+}
+
+bool AInventoryController::AddItemToInventory(FInventoryItem Item)
+{
+	if (Inventory.Num() < InventorySlotLimit && GetInventoryWeight() + Item.Weight <= InventoryWeightLimit)
+	{
+		Inventory.Add(Item);
+		ReloadInventory();
+		return true;
+	}
+	return false;
+}
+
+FInventoryItem* AInventoryController::FindItemByID(FName ID)
+{
+	AInventoryGameState* GameState = Cast<AInventoryGameState>(GetWorld()->GetGameState());
+	UDataTable* ItemTable = GameState->GetItemDB();
+	FInventoryItem* ItemToAdd = ItemTable->FindRow<FInventoryItem>(ID, "");
+
+	return ItemToAdd;
 }
 
 void AInventoryController::SetupInputComponent()

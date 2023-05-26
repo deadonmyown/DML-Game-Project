@@ -1,9 +1,11 @@
-/*
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "ShopComponent.h"
-#include "Item.h"
+
+#include "InventoryController.h"
+#include "InventoryGameState.h"
+
 
 // Sets default values for this component's properties
 UShopComponent::UShopComponent()
@@ -21,85 +23,78 @@ void UShopComponent::BeginPlay()
 
 	for(auto& Item : DefaultsItem)
 	{
-		AddItem(Item.GetDefaultObject());
+		AddItemToInventory(Item);
 	}
 }
 
-bool UShopComponent::AddItem(AItem* Item)
+bool UShopComponent::AddItemToInventory(FInventoryItem Item)
 {
-	if(!Item)
-	{
-		return false;
-	}
-
-	auto* NewItem = NewObject<AItem>(GetOwner(), Item->GetClass(), Item->GetFName(), RF_NoFlags, Item);
-
-	/*if(NewItem->GetWorld())
-	{
-		if(APickupableItem* PickupableItem = Cast<APickupableItem>(NewItem))
-		{
-			if(Item->GetWorld())
-			{
-				PickupableItem->IsOnLevel = true;
-			}
-			PickupableItem->OwningInventory = this;
-			Items.Add(PickupableItem);
-			OnShopUpdated.Broadcast();
-			return true;
-		}
-	}#1#
-	
-	NewItem->OwningInventory = this;
-	Items.Add(NewItem);
-	
-	//Update UI
-	OnShopUpdated.Broadcast();
-	
+	Shop.Add(Item);
+	ReloadInventory();
 	return true;
 }
 
-bool UShopComponent::RemoveItem(AItem* Item)
+bool UShopComponent::AddItemToInventoryByID(FName ID)
 {
-	if(Item)
-	{
-		Item->OwningInventory = nullptr;
-		Items.RemoveSingle(Item);
+	FInventoryItem* ItemToAdd = FindItemByID(ID);
 
-		OnShopUpdated.Broadcast();
-		
+	if (ItemToAdd)
+	{
+		Shop.Add(*ItemToAdd);
+		ReloadInventory();
 		return true;
 	}
-
 	return false;
 }
 
-bool UShopComponent::BuyItem(AFPCharacter* Character, AItem* Item)
+bool UShopComponent::BuyItem(APlayerController* Controller, FInventoryItem Item)
 {
-	if(Character && Item && Character->Silversmith >= Item->Cost)
+	if(Controller)
 	{
-		RemoveItem(Item);
-		if(Character->Inventory->AddItem(Item))
+		AInventoryController* IController = Cast<AInventoryController>(Controller);
+		if(IController && IController->Money >= Item.Value)
 		{
-			Character->Silversmith -= Item->Cost;
-			return true;
+			if(IController->AddItemToInventory(Item))
+			{
+				IController->Money -= Item.Value;
+				RemoveItem(Item);
+				ReloadInventory();
+				return true;
+			}
 		}
-		AddItem(Item);
 	}
 	return false;
 }
 
-bool UShopComponent::SellItem(AFPCharacter* Character, AItem* Item)
+bool UShopComponent::SellItem(APlayerController* Controller, FInventoryItem Item)
 {
-	if(Character || Item)
+	if(Controller)
 	{
-		Character->Inventory->RemoveItem(Item);
-		AddItem(Item);
-		Character->Silversmith += FGenericPlatformMath::CeilToInt(Item->Cost * Percent);
-		return true;
+		AInventoryController* IController = Cast<AInventoryController>(Controller);
+		if(IController)
+		{
+			if(AddItemToInventory(Item))
+			{
+				IController->Money += Item.Value;
+				IController->RemoveItem(Item);
+				return true;
+			}
+		}
 	}
 	return false;
 }
-*/
+
+FInventoryItem* UShopComponent::FindItemByID(FName ID)
+{
+	AInventoryGameState* GameState = Cast<AInventoryGameState>(GetWorld()->GetGameState());
+	UDataTable* ItemTable = GameState->GetItemDB();
+	FInventoryItem* ItemToAdd = ItemTable->FindRow<FInventoryItem>(ID, "");
+
+	return ItemToAdd;
+}
+
+
+
 
 
 

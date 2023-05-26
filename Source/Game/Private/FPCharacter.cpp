@@ -2,7 +2,6 @@
 
 
 #include "FPCharacter.h"
-#include "Vendor.h"
 #include "Interactable.h"
 #include "AutoPickup.h"
 #include "InventoryItem.h"
@@ -15,7 +14,6 @@ AFPCharacter::AFPCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	IsQuestAvailable = false;
-	IsOverlapItem = false;
 	Health = 100;
 
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
@@ -26,9 +24,6 @@ AFPCharacter::AFPCharacter()
 
 	Cam->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	Cam->SetRelativeLocation(FVector(35,0,60));
-
-	/*Inventory = CreateDefaultSubobject<UInventoryComponent>("Inventory");
-	Inventory->Capacity = 20;*/
 
 	// Create the collection sphere
 	CollectionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollectionSphere"));
@@ -162,52 +157,21 @@ void AFPCharacter::VerticalRotation(float input)
 	}
 }
 
-/*void AFPCharacter::Interact()
-{
-	TArray<AActor*> OverlappingActors;
-	if(IsOverlapItem)
-	{
-		GetOverlappingActors(OverlappingActors, APickupableItem::StaticClass());
-		if(OverlappingActors.Num() > 0)
-		{
-			APickupableItem* FirstItem = Cast<APickupableItem>(OverlappingActors[0]);
-			FirstItem->PickupItem(this);
-		}
-	}
-	else
-	{
-		GetOverlappingActors(OverlappingActors);
-		for(AActor* Actor : OverlappingActors)
-		{
-			AVendor* Vendor = Cast<AVendor>(Actor);
-			if(Vendor)
-			{
-				//TODO: Cho-to
-			}
-		}
-	}
-}
-
-void AFPCharacter::CheckAttack()
-{
-	if(EquippedWeapon)
-	{
-		EquippedWeapon->Attack();
-	}
-}*/
-
 
 
 void AFPCharacter::QuestTest()
 {
 	if(CurrentMission != nullptr)
 	{
-		if(const int Reward = CurrentMission->MissionProgress(1); Reward != 0)
+		if(AInventoryController* controller = Cast<AInventoryController>(GetController()))
 		{
-			Silversmith += Reward;
-			CurrentMission = nullptr;
+			if(const int Reward = CurrentMission->MissionProgress(1); Reward != 0)
+			{
+				controller->Money += Reward;
+				CurrentMission = nullptr;
+			}
+			UE_LOG(LogTemp, Display, TEXT("Ur silversmith: %i"), controller->Money);
 		}
-		UE_LOG(LogTemp, Display, TEXT("Ur silversmith: %i"), Silversmith);
 	}
 }
 
@@ -217,16 +181,6 @@ void AFPCharacter::SetQuest(UQuestInfo* Quest)
 
 	//TODO: Update UI and maybe implementation of QuestComponent.
 }
-
-
-/*void AFPCharacter::UseItem(AItem* Item)
-{
-	if(Item)
-	{
-		Item->Use(this);
-		Item->OnUse(this); //bp
-	}
-}*/
 
 
 
