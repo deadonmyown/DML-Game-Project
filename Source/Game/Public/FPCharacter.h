@@ -4,7 +4,6 @@
 
 #include "Engine.h"
 #include "GameFramework/Character.h"
-#include "QuestMissionInfo.h"
 #include "Camera/CameraComponent.h"
 #include "FPCharacter.generated.h"
 
@@ -40,21 +39,11 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	bool IsShopAvailable;
 
-	UPROPERTY(BlueprintReadOnly)
-	UQuestMissionInfo * CurrentMission = nullptr;
-
-	UPROPERTY(BlueprintReadOnly)
-	class UQuestInfo* CurrentQuest = nullptr;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int Health;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	int DropItemMultiplier;
-
-	void QuestTest();
-	UFUNCTION(BlueprintCallable)
-	void SetQuest(UQuestInfo* Quest);
 
 	UPROPERTY(EditAnywhere, Category = "Camera")
 	UCameraComponent* Cam;
@@ -69,6 +58,4 @@ private:
 
 	void HorizontalRotation(float input);
 	void VerticalRotation(float input);
-
-	TSubclassOf<class AAutoPickup> AutoPickup; 
 };

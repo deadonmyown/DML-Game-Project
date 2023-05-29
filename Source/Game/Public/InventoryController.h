@@ -18,7 +18,25 @@ class GAME_API AInventoryController : public APlayerController
 
 public:
 	AInventoryController();
+	
+	//Quest System
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateMissionInfo();
+	
+	UFUNCTION(BlueprintCallable)
+	bool MissionCheck(int missionChange, TEnumAsByte<enum EQuestMissionGoal> CurrMissionGoal, TEnumAsByte<ETargetType> CurrTarget);
 
+	UFUNCTION(BlueprintCallable)
+	void SetMission(class UQuestMissionInfo* MissionInfo);
+	
+	UFUNCTION(BlueprintCallable)
+	bool FinishMission();
+	
+	UFUNCTION(BlueprintCallable)
+	void RemoveItems(UQuestMissionInfo* MissionInfo);
+	//
+
+	//Inventory System
 	UFUNCTION(BlueprintImplementableEvent)
 	void ReloadInventory();
 
@@ -41,25 +59,57 @@ public:
 	bool AddItemToInventory(FInventoryItem Item);
 	
 	FInventoryItem* FindItemByID(FName ID);
+	//
+	
+	//Character Info
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int32 Money;
+	//
+	
+	//Quest System
+	UPROPERTY(BlueprintReadOnly)
+	UQuestMissionInfo * CurrentMission = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	class AInteractable* CurrentInteractable;
+	int32 QuestsCompleted;
+	//
+	
+	//Inventory System
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	AInteractable* CurrentInteractable;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TArray<FInventoryItem> Inventory;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	int32 Money;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 InventorySlotLimit;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 InventoryWeightLimit;
+	//
+	
+	//Weapons
+	UFUNCTION(BlueprintCallable)
+	void TryAttack();
+
+	void AttachMeleeWeapon();
+	void AttachRangeWeapon();
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class AAxe* MeleeWeapon = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class ABow* RangeWeapon = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class AWeapon* ActiveWeapon = nullptr;
+	//
 
 protected:
+	//Inventory System
 	void Interact();
-
+	//
+	
 	virtual void SetupInputComponent() override;
 	
 };

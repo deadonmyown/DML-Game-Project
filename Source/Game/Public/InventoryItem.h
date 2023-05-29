@@ -32,10 +32,13 @@ public:
 	FText Description;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSubclassOf<class ABaseItem> BaseItem;
+	TEnumAsByte<enum EQuestMissionGoal> MissionGoal;
 	
-	/*UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TSubclassOf<class IItemFunctionalityInterface> ItemClass;*/
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TEnumAsByte<enum ETargetType> Target;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<class ABaseItem> BaseItem;
 
 	bool operator==(const FInventoryItem& OtherItem) const
 	{

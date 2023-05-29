@@ -7,6 +7,7 @@
 UENUM(BlueprintType, Category="MissionGoal")
 enum EQuestMissionGoal
 {
+	EQMG_None UMETA(DisplayName = "None"),
 	EQMG_Kill UMETA(DisplayName = "Kill"),
 	EQMG_BringCorpse UMETA(DisplayName = "BringCorpse"),
 	EQMG_Collect UMETA(DisplayName = "Collect"),

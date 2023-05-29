@@ -3,7 +3,8 @@
 
 #include "BaseItem.h"
 #include "FPCharacter.h"
-#include "ManPickup.h"
+#include "InventoryController.h"
+
 
 
 // Sets default values
@@ -18,21 +19,46 @@ void ABaseItem::Use_Implementation(APlayerController* Controller)
 	//pox
 }
 
-bool ABaseItem::Drop_Implementation(APlayerController* Controller)
+bool ABaseItem::Drop_Implementation(APlayerController* Controller, FInventoryItem Item)
 {
-	AFPCharacter* Character = Cast<AFPCharacter>(UGameplayStatics::GetPlayerPawn(Controller->GetWorld(), 0));
-	const UWorld* World = Controller->GetWorld();
-	UClass* const ActorClassToSpawn = GetClass();
-	if (World && ActorClassToSpawn)
+	if(AInventoryController* IController = Cast<AInventoryController>(Controller))
 	{
-		FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
-		SpawnParameters.Template = this;
-		if(auto* Spawned = Controller->GetWorld()->SpawnActor<ABaseItem>(ActorClassToSpawn,  FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters))
+		AFPCharacter* FPCharacter = Cast<AFPCharacter>(IController->GetCharacter());
+		const UWorld* World = IController->GetWorld();
+		UClass* const ActorClassToSpawn = GetClass();
+		if (World && ActorClassToSpawn)
 		{
-			Spawned->SetActorLocation(Character->GetActorLocation() + Character->GetActorForwardVector() * Character->DropItemMultiplier);
-			return true;
+			FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
+			SpawnParameters.Template = this;
+			if(auto* Spawned = IController->GetWorld()->SpawnActor<ABaseItem>(ActorClassToSpawn,  FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters))
+			{
+				Spawned->SetActorLocation(FPCharacter->GetActorLocation() + FPCharacter->GetActorForwardVector() * FPCharacter->DropItemMultiplier);
+				IController->RemoveItem(Item);
+				return true;
+			}
 		}
 	}
 	return false;
+}
+
+ABaseItem* ABaseItem::Spawn(APlayerController* Controller)
+{
+	if(AInventoryController* IController = Cast<AInventoryController>(Controller))
+	{
+		AFPCharacter* FPCharacter = Cast<AFPCharacter>(IController->GetCharacter());
+		const UWorld* World = IController->GetWorld();
+		UClass* const ActorClassToSpawn = GetClass();
+		if (World && ActorClassToSpawn)
+		{
+			FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
+			SpawnParameters.Template = this;
+			if(auto* Spawned = IController->GetWorld()->SpawnActor<ABaseItem>(ActorClassToSpawn,  FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters))
+			{
+				Spawned->SetActorLocation(FPCharacter->GetActorLocation() + FPCharacter->GetActorForwardVector() * FPCharacter->DropItemMultiplier);
+				return Spawned;
+			}
+		}
+	}
+	return nullptr;
 }
 

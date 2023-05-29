@@ -111,9 +111,6 @@ void AFPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	InputComponent->BindAxis("Move Forward/Backward", this, &AFPCharacter::VerticalMovement);
 	InputComponent->BindAxis("Horizontal Rotation", this, &AFPCharacter::HorizontalRotation);
 	InputComponent->BindAxis("Vertical Rotation", this, &AFPCharacter::VerticalRotation);
-
-	/*InputComponent->BindAction("Interact", IE_Pressed, this, &AFPCharacter::Interact);
-	InputComponent->BindAction("LMBAction", IE_Pressed, this, &AFPCharacter::CheckAttack);*/
 }
 
 void AFPCharacter::HorizontalMovement(float input)
@@ -155,31 +152,6 @@ void AFPCharacter::VerticalRotation(float input)
 			//UE_LOG(LogTemp, Display, TEXT("rotation after: %f"), Cam->GetRelativeRotation().Pitch);
 		}
 	}
-}
-
-
-
-void AFPCharacter::QuestTest()
-{
-	if(CurrentMission != nullptr)
-	{
-		if(AInventoryController* controller = Cast<AInventoryController>(GetController()))
-		{
-			if(const int Reward = CurrentMission->MissionProgress(1); Reward != 0)
-			{
-				controller->Money += Reward;
-				CurrentMission = nullptr;
-			}
-			UE_LOG(LogTemp, Display, TEXT("Ur silversmith: %i"), controller->Money);
-		}
-	}
-}
-
-void AFPCharacter::SetQuest(UQuestInfo* Quest)
-{
-	CurrentQuest = Quest;
-
-	//TODO: Update UI and maybe implementation of QuestComponent.
 }
 
 

@@ -20,16 +20,16 @@ void UShopComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	for(auto& Item : DefaultsItem)
+	for(auto& ID : DefaultsItemById)
 	{
-		AddItemToInventory(Item);
+		AddItemToInventoryByID(ID);
 	}
 }
 
 bool UShopComponent::AddItemToInventory(FInventoryItem Item)
 {
 	Shop.Add(Item);
-	ReloadInventory();
+	ReloadShop.Broadcast();
 	return true;
 }
 
@@ -40,7 +40,7 @@ bool UShopComponent::AddItemToInventoryByID(FName ID)
 	if (ItemToAdd)
 	{
 		Shop.Add(*ItemToAdd);
-		ReloadInventory();
+		ReloadShop.Broadcast();
 		return true;
 	}
 	return false;
@@ -56,8 +56,8 @@ bool UShopComponent::BuyItem(APlayerController* Controller, FInventoryItem Item)
 			if(IController->AddItemToInventory(Item))
 			{
 				IController->Money -= Item.Value;
-				RemoveItem(Item);
-				ReloadInventory();
+				RemoveItem.Broadcast(Item);
+				ReloadShop.Broadcast();
 				return true;
 			}
 		}
@@ -76,6 +76,7 @@ bool UShopComponent::SellItem(APlayerController* Controller, FInventoryItem Item
 			{
 				IController->Money += Item.Value;
 				IController->RemoveItem(Item);
+				ReloadShop.Broadcast();
 				return true;
 			}
 		}

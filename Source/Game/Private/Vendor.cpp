@@ -2,6 +2,7 @@
 
 
 #include "Vendor.h"
+#include "FPCharacter.h"
 
 // Sets default values
 AVendor::AVendor()
@@ -10,6 +11,8 @@ AVendor::AVendor()
 	PrimaryActorTick.bCanEverTick = true;
 
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionComponent"));
+	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AVendor::OnOverlapBegin);
+	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &AVendor::OnOverlapEnd);
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("Mesh");
 	RootComponent = BoxComponent;
 	Mesh->SetupAttachment(BoxComponent);
@@ -50,6 +53,27 @@ void AVendor::SellItem(APlayerController* PlayerController, FInventoryItem Item)
 	if(Controller)
 	{
 		Shop->SellItem(PlayerController, Item);
+	}
+}
+
+void AVendor::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	AFPCharacter* FPPlayer = Cast<AFPCharacter>(OtherActor);
+	if(FPPlayer != nullptr)
+	{
+		UE_LOG(LogTemp, Display, TEXT("overlap player begin"));
+		FPPlayer->IsShopAvailable = true;
+	}
+}
+
+
+void AVendor::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	AFPCharacter* FPPlayer = Cast<AFPCharacter>(OtherActor);
+	if(FPPlayer != nullptr)
+	{
+		UE_LOG(LogTemp, Display, TEXT("overlap player end"));
+		FPPlayer->IsShopAvailable = false;
 	}
 }
 

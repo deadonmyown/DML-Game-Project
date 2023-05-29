@@ -22,11 +22,11 @@ class GAME_API IItemFunctionalityInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void Use(APlayerController* Controller);
 	virtual void Use_Implementation(APlayerController* Controller) = 0;
 
 	UFUNCTION(BlueprintNativeEvent)
-	bool Drop(APlayerController* Controller);
-	virtual bool Drop_Implementation(APlayerController* Controller) = 0;
+	bool Drop(APlayerController* Controller,struct FInventoryItem Item);
+	virtual bool Drop_Implementation(APlayerController* Controller, FInventoryItem Item) = 0;
 };

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InventoryController.h"
 #include "UObject/NoExportTypes.h"
 #include "QuestMissionInfo.generated.h"
 
@@ -31,9 +32,20 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	int Reward;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadWrite)
 	bool IsComplete = false;
+	UPROPERTY(BlueprintReadOnly)
+	bool IsGetReward = false;
 
-	UFUNCTION()
-	int MissionProgress(int progress);
+	UFUNCTION(BlueprintCallable)
+	void MissionProgress(int progress, AInventoryController* IController);
+
+	UFUNCTION(BlueprintCallable)
+	void MissionRegress(int regress, AInventoryController* IController);
+
+	UFUNCTION(BlueprintCallable)
+	bool GetReward(AInventoryController* IController);
+
+	UFUNCTION(BlueprintCallable)
+	void ClearMissionInfo();
 };

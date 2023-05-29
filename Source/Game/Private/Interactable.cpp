@@ -9,7 +9,7 @@ AInteractable::AInteractable()
 
 void AInteractable::Interact_Implementation(APlayerController* Controller)
 {
-	return;
+	
 }
 
 void AInteractable::Use_Implementation(APlayerController* Controller)

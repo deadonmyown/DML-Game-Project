@@ -39,30 +39,30 @@ void AQuestTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 					  const FHitResult &SweepResult )
 {
 	AFPCharacter* player = Cast<AFPCharacter>(OtherActor);
-	if(player != nullptr)
+	if(player)
 	{
 		UE_LOG(LogTemp, Display, TEXT("overlap player begin"));
 		player->IsQuestAvailable = true;
-		UQuestMissionInfo* Mission = NewObject<UQuestMissionInfo>();
+		/*UQuestMissionInfo* Mission = NewObject<UQuestMissionInfo>();
 		Mission->Description = "aaaaaa " + FString::FromInt(Missions.Num());
 		Mission->Reward = 10;
 		Mission->MissionCurrentProgress = 0;
 		Mission->MissionMaxProgress = 1;
 		Missions.Add(Mission);
 		player->CurrentMission = Mission;
-		UE_LOG(LogTemp, Display, TEXT("Mission info: c.p: %i \t m.p: %i \t reward: %i"), player->CurrentMission->MissionCurrentProgress, player->CurrentMission->MissionMaxProgress, player->CurrentMission->Reward);
+		UE_LOG(LogTemp, Display, TEXT("Mission info: c.p: %i \t m.p: %i \t reward: %i"), player->CurrentMission->MissionCurrentProgress, player->CurrentMission->MissionMaxProgress, player->CurrentMission->Reward);*/
 	}
 }
 
 void AQuestTrigger::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	AFPCharacter* player = Cast<AFPCharacter>(OtherActor);
-	if(player != nullptr)
+	if(player)
 	{
 		UE_LOG(LogTemp, Display, TEXT("overlap player end"));
 		player->IsQuestAvailable = false;
-		UE_LOG(LogTemp, Display, TEXT("%s succeed"), *Missions.Last()->Description);
-		player->QuestTest();
+		/*UE_LOG(LogTemp, Display, TEXT("%s succeed"), *Missions.Last()->Description);
+		player->QuestTest();*/
 	}
 }
 

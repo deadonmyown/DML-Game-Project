@@ -3,9 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InventoryItem.h"
 #include "Components/ActorComponent.h"
 #include "ShopComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRemoveItem, FInventoryItem, Item);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnShopReload);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class GAME_API UShopComponent : public UActorComponent
@@ -21,15 +24,8 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-
-	UFUNCTION(BlueprintImplementableEvent)
-	void ReloadInventory();
-
-	UFUNCTION(BlueprintImplementableEvent)
-	void RemoveItem(struct FInventoryItem Item);
-
 	UFUNCTION(BlueprintCallable)
-	bool BuyItem(APlayerController* Controller, FInventoryItem Item);
+	bool BuyItem(APlayerController* Controller, struct FInventoryItem Item);
 
 	UFUNCTION(BlueprintCallable)
 	bool SellItem(APlayerController* Controller, FInventoryItem Item);
@@ -49,5 +45,11 @@ public:
 	float Percent;
 
 	UPROPERTY(EditAnywhere)
-	TArray<FInventoryItem> DefaultsItem;
+	TArray<FName> DefaultsItemById;
+
+	UPROPERTY(BlueprintAssignable, Category = "Utils")
+	FRemoveItem RemoveItem;
+
+	UPROPERTY(BlueprintAssignable, Category = "Utils")
+	FOnShopReload ReloadShop;
 };
