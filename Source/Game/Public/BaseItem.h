@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InventoryItem.h"
 #include "ItemFunctionalityInterface.h"
 #include "GameFramework/Actor.h"
 #include "BaseItem.generated.h"
@@ -21,7 +22,7 @@ public:
 	virtual void Use_Implementation(APlayerController* Controller);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	bool Drop(APlayerController* Controller,struct FInventoryItem Item);
+	bool Drop(APlayerController* Controller, FInventoryItem Item);
 	virtual bool Drop_Implementation(APlayerController* Controller, FInventoryItem Item);
 
 	ABaseItem* Spawn(APlayerController* Controller);

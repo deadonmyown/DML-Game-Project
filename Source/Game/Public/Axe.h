@@ -17,7 +17,11 @@ public:
 	// Sets default values for this actor's properties
 	AAxe();
 
-	virtual void Attack_Implementation() override;
+	virtual void Attack_Implementation(APlayerController* Controller) override;
+
+	virtual void Equip_Implementation(APlayerController* Controller) override;
+
+	virtual bool CheckUnequip_Implementation(APlayerController* Controller) override;
 	
 	virtual void Interact_Implementation(APlayerController* Controller) override;
 

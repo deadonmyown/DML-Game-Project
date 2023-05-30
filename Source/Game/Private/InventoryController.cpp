@@ -17,30 +17,14 @@ AInventoryController::AInventoryController()
 void AInventoryController::UseItem(FInventoryItem Item)
 {
 	auto* BaseItem = Item.BaseItem.GetDefaultObject();
-	BaseItem->Use_Implementation(this);
+	BaseItem->Use(this);
 }
 
 bool AInventoryController::DropItem(FInventoryItem Item)
 {
 	auto* BaseItem = Item.BaseItem.GetDefaultObject();
-	
-	/*AFPCharacter* FPCharacter = Cast<AFPCharacter>(GetCharacter());
-	const UWorld* World = GetWorld();
-	UClass* const ActorClassToSpawn = BaseItem->GetClass();
-	if (World && ActorClassToSpawn)
-	{
-		FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
-		SpawnParameters.Template = BaseItem;
-		if(auto* Spawned = GetWorld()->SpawnActor<ABaseItem>(ActorClassToSpawn,  FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters))
-		{
-			Spawned->SetActorLocation(FPCharacter->GetActorLocation() + FPCharacter->GetActorForwardVector() * FPCharacter->DropItemMultiplier);
-			RemoveItem(Item);
-			return true;
-		}
-	}
-	return false;*/
 
-	return BaseItem->Drop_Implementation(this, Item);
+	return BaseItem->Drop(this, Item);
 }
 
 int32 AInventoryController::GetInventoryWeight()
@@ -84,6 +68,15 @@ bool AInventoryController::AddItemToInventory(FInventoryItem Item)
 	return false;
 }
 
+FInventoryItem AInventoryController::FindItemByIDBP(FName ID)
+{
+	AInventoryGameState* GameState = Cast<AInventoryGameState>(GetWorld()->GetGameState());
+	UDataTable* ItemTable = GameState->GetItemDB();
+	FInventoryItem* ItemToAdd = ItemTable->FindRow<FInventoryItem>(ID, "");
+
+	return *ItemToAdd;
+}
+
 FInventoryItem* AInventoryController::FindItemByID(FName ID)
 {
 	AInventoryGameState* GameState = Cast<AInventoryGameState>(GetWorld()->GetGameState());
@@ -107,7 +100,7 @@ void AInventoryController::TryAttack()
 {
 	if(ActiveWeapon)
 	{
-		ActiveWeapon->Attack();
+		ActiveWeapon->Attack(this);
 	}
 }
 
@@ -115,7 +108,10 @@ void AInventoryController::AttachMeleeWeapon()
 {
 	if(MeleeWeapon)
 	{
-		MeleeWeapon->Use_Implementation(this);
+		auto* DefaultMeleeWeapon = MeleeWeapon.GetDefaultObject();
+		if(DefaultMeleeWeapon->CheckUnequip(this))
+			return;
+		DefaultMeleeWeapon->Equip(this);
 	}
 }
 
@@ -123,7 +119,10 @@ void AInventoryController::AttachRangeWeapon()
 {
 	if(RangeWeapon)
 	{
-		RangeWeapon->Use_Implementation(this);
+		auto* DefaultRangeWeapon = RangeWeapon.GetDefaultObject();
+		if(DefaultRangeWeapon->CheckUnequip(this))
+			return;
+		DefaultRangeWeapon->Equip(this);
 	}
 }
 
@@ -186,7 +185,7 @@ void AInventoryController::RemoveItems(UQuestMissionInfo* MissionInfo)
 		int counter(0);
 		for(auto Item: Inventory)
 		{
-			if(counter > MissionInfo->MissionMaxProgress)
+			if(counter >= MissionInfo->MissionMaxProgress)
 			{
 				break;
 			}

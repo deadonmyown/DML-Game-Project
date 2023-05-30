@@ -38,9 +38,12 @@ public:
 
 	//Inventory System
 	UFUNCTION(BlueprintImplementableEvent)
+	void SetWeaponWidget(FInventoryItem Item);
+	
+	UFUNCTION(BlueprintImplementableEvent)
 	void ReloadInventory();
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void RemoveItem(FInventoryItem Item);
 
 	UFUNCTION(BlueprintCallable)
@@ -57,6 +60,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Utils")
 	bool AddItemToInventory(FInventoryItem Item);
+
+	UFUNCTION(BlueprintCallable)
+	FInventoryItem FindItemByIDBP(FName ID);
 	
 	FInventoryItem* FindItemByID(FName ID);
 	//
@@ -92,14 +98,16 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void TryAttack();
 
+	UFUNCTION(BlueprintCallable)
 	void AttachMeleeWeapon();
+	UFUNCTION(BlueprintCallable)
 	void AttachRangeWeapon();
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	class AAxe* MeleeWeapon = nullptr;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TSubclassOf<class AAxe> MeleeWeapon;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	class ABow* RangeWeapon = nullptr;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TSubclassOf<class ABow> RangeWeapon;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class AWeapon* ActiveWeapon = nullptr;

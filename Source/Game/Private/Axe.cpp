@@ -7,14 +7,14 @@
 
 AAxe::AAxe()
 {
-	AttackSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollectionSphere"));
+	AttackSphere = CreateDefaultSubobject<USphereComponent>(TEXT("AttackSphere"));
 	AttackSphere->SetupAttachment(RootComponent);
-	AttackSphere->SetSphereRadius(85.f);
+	AttackSphere->SetSphereRadius(65.f);
 
 	Name = "Axe";
 }
 
-void AAxe::Attack_Implementation()
+void AAxe::Attack_Implementation(APlayerController* Controller)
 {
 	TArray<AActor*> OverlappedActors;
 	AttackSphere->GetOverlappingActors(OverlappedActors);
@@ -25,19 +25,15 @@ void AAxe::Attack_Implementation()
 	}
 }
 
-void AAxe::Interact_Implementation(APlayerController* Controller)
+void AAxe::Equip_Implementation(APlayerController* Controller)
 {
-	Super::Interact_Implementation(Controller);
-}
-
-void AAxe::Use_Implementation(APlayerController* Controller)
-{
+	//Super::Equip_Implementation(Controller);
 	if(AInventoryController* IController = Cast<AInventoryController>(Controller))
 	{
 		if(IController->ActiveWeapon)
 		{
-			IController->ActiveWeapon->DestroyWeapon();
-			IController->MeleeWeapon = nullptr;
+			IController->ActiveWeapon->Destroy();
+			IController->ActiveWeapon = nullptr;
 		}
 
 		AFPCharacter* FPCharacter = Cast<AFPCharacter>(IController->GetCharacter());
@@ -53,9 +49,36 @@ void AAxe::Use_Implementation(APlayerController* Controller)
 				Spawned->AttachToComponent(FPCharacter->Cam, FAttachmentTransformRules::KeepRelativeTransform);
 				Spawned->SetActorRelativeLocation(Position);
 				IController->ActiveWeapon = Spawned;
-				IController->MeleeWeapon = Spawned;
 			}
 		}
+	}
+}
+
+bool AAxe::CheckUnequip_Implementation(APlayerController* Controller)
+{
+	if(AInventoryController* IController = Cast<AInventoryController>(Controller))
+	{
+		if(AAxe* Axe = Cast<AAxe>(IController->ActiveWeapon))
+		{
+			IController->ActiveWeapon->Destroy();
+			IController->ActiveWeapon = nullptr;
+			return true;
+		}
+	}
+	return false;
+}
+
+void AAxe::Interact_Implementation(APlayerController* Controller)
+{
+	Super::Interact_Implementation(Controller);
+}
+
+void AAxe::Use_Implementation(APlayerController* Controller)
+{
+	if(AInventoryController* IController = Cast<AInventoryController>(Controller))
+	{
+		FInventoryItem Item = IController->FindItemByIDBP(ItemID);
+		IController->SetWeaponWidget(Item);
 	}
 }
 

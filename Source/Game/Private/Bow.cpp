@@ -3,6 +3,7 @@
 
 #include "FPCharacter.h"
 #include "InventoryController.h"
+#include "Arrow.h"
 
 
 ABow::ABow()
@@ -10,24 +11,24 @@ ABow::ABow()
 	Name = "Bow";
 }
 
-void ABow::Attack_Implementation()
+void ABow::Attack_Implementation(APlayerController* Controller)
 {
-	Super::Attack_Implementation();
+	if(Arrow)
+	{
+		auto* NewArrow = Arrow.GetDefaultObject();
+		NewArrow->Shoot(Controller, this);
+	}
 }
 
-void ABow::Interact_Implementation(APlayerController* Controller)
+void ABow::Equip_Implementation(APlayerController* Controller)
 {
-	Super::Interact_Implementation(Controller);
-}
-
-void ABow::Use_Implementation(APlayerController* Controller)
-{
+	//Super::Equip_Implementation(Controller);
 	if(AInventoryController* IController = Cast<AInventoryController>(Controller))
 	{
 		if(IController->ActiveWeapon)
 		{
-			IController->ActiveWeapon->DestroyWeapon();
-			IController->RangeWeapon = nullptr;
+			IController->ActiveWeapon->Destroy();
+			IController->ActiveWeapon = nullptr;
 		}
 
 		AFPCharacter* FPCharacter = Cast<AFPCharacter>(IController->GetCharacter());
@@ -43,9 +44,36 @@ void ABow::Use_Implementation(APlayerController* Controller)
 				Spawned->AttachToComponent(FPCharacter->Cam, FAttachmentTransformRules::KeepRelativeTransform);
 				Spawned->SetActorRelativeLocation(Position);
 				IController->ActiveWeapon = Spawned;
-				IController->RangeWeapon = Spawned;
 			}
 		}
+	}
+}
+
+bool ABow::CheckUnequip_Implementation(APlayerController* Controller)
+{
+	if(AInventoryController* IController = Cast<AInventoryController>(Controller))
+	{
+		if(ABow* Bow = Cast<ABow>(IController->ActiveWeapon))
+		{
+			IController->ActiveWeapon->Destroy();
+			IController->ActiveWeapon = nullptr;
+			return true;
+		}
+	}
+	return false;
+}
+
+void ABow::Interact_Implementation(APlayerController* Controller)
+{
+	Super::Interact_Implementation(Controller);
+}
+
+void ABow::Use_Implementation(APlayerController* Controller)
+{
+	if(AInventoryController* IController = Cast<AInventoryController>(Controller))
+	{
+		FInventoryItem Item = IController->FindItemByIDBP(ItemID);
+		IController->SetWeaponWidget(Item);
 	}
 }
 

@@ -14,27 +14,18 @@ AWeapon::AWeapon()
 
 }
 
-void AWeapon::Attack_Implementation()
+void AWeapon::Attack_Implementation(APlayerController* Controller)
 {
 }
 
-void AWeapon::Interact_Implementation(APlayerController* Controller)
-{
-	AInventoryController* IController = Cast<AInventoryController>(Controller);
-	if(IController->ActiveWeapon != this)
-	{
-		if(IController->AddItemToInventoryByID(ItemID))
-			Destroy();
-	}
-}
-
-void AWeapon::Use_Implementation(APlayerController* Controller)
+void AWeapon::Equip_Implementation(APlayerController* Controller)
 {
 	if(AInventoryController* IController = Cast<AInventoryController>(Controller))
 	{
 		if(IController->ActiveWeapon)
 		{
-			IController->ActiveWeapon->DestroyWeapon();
+			IController->ActiveWeapon->Destroy();
+			IController->ActiveWeapon = nullptr;
 		}
 
 		AFPCharacter* FPCharacter = Cast<AFPCharacter>(IController->GetCharacter());
@@ -52,6 +43,30 @@ void AWeapon::Use_Implementation(APlayerController* Controller)
 				IController->ActiveWeapon = Spawned;
 			}
 		}
+	}
+}
+
+bool AWeapon::CheckUnequip_Implementation(APlayerController* Controller)
+{
+	return true;
+}
+
+void AWeapon::Interact_Implementation(APlayerController* Controller)
+{
+	AInventoryController* IController = Cast<AInventoryController>(Controller);
+	if(IController->ActiveWeapon != this)
+	{
+		if(IController->AddItemToInventoryByID(ItemID))
+			Destroy();
+	}
+}
+
+void AWeapon::Use_Implementation(APlayerController* Controller)
+{
+	if(AInventoryController* IController = Cast<AInventoryController>(Controller))
+	{
+		FInventoryItem Item = IController->FindItemByIDBP(ItemID);
+		IController->SetWeaponWidget(Item);
 	}
 }
 

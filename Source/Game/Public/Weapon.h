@@ -16,8 +16,16 @@ public:
 	AWeapon();
 
 	UFUNCTION(BlueprintNativeEvent)
-	void Attack();
-	virtual void Attack_Implementation();
+	void Attack(APlayerController* Controller);
+	virtual void Attack_Implementation(APlayerController* Controller);
+
+	UFUNCTION(BlueprintNativeEvent)
+	void Equip(APlayerController* Controller);
+	virtual void Equip_Implementation(APlayerController* Controller);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	bool CheckUnequip(APlayerController* Controller);
+	virtual bool CheckUnequip_Implementation(APlayerController* Controller);
 	
 	virtual void Interact_Implementation(APlayerController* Controller) override;
 

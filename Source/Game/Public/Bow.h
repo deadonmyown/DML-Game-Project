@@ -16,9 +16,16 @@ public:
 	// Sets default values for this actor's properties
 	ABow();
 
-	virtual void Attack_Implementation() override;
+	virtual void Attack_Implementation(APlayerController* Controller) override;
+
+	virtual void Equip_Implementation(APlayerController* Controller) override;
+
+	virtual bool CheckUnequip_Implementation(APlayerController* Controller) override;
 	
 	virtual void Interact_Implementation(APlayerController* Controller) override;
 
 	virtual void Use_Implementation(APlayerController* Controller) override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<class AArrow> Arrow;
 };
