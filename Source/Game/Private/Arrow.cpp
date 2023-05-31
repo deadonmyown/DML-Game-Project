@@ -11,12 +11,12 @@
 AArrow::AArrow()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	
 	AttackSphere = CreateDefaultSubobject<USphereComponent>(TEXT("AttackSphere"));
 	AttackSphere->SetupAttachment(RootComponent);
 	AttackSphere->SetSphereRadius(50.f);
+
+	Name = "Arrow";
 }
 
 void AArrow::Shoot(APlayerController* Controller, ABow* Bow)
@@ -47,11 +47,5 @@ void AArrow::BeginPlay()
 void AArrow::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	FVector Location = GetActorLocation();
-
-	Location += GetActorForwardVector() * Speed * DeltaTime;
-	SetActorLocation(Location);
-	
 }
 

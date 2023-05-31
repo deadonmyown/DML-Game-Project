@@ -17,6 +17,7 @@ void ABow::Attack_Implementation(APlayerController* Controller)
 	{
 		auto* NewArrow = Arrow.GetDefaultObject();
 		NewArrow->Shoot(Controller, this);
+		AttachArrow();
 	}
 }
 
@@ -29,6 +30,7 @@ void ABow::Equip_Implementation(APlayerController* Controller)
 		{
 			IController->ActiveWeapon->Destroy();
 			IController->ActiveWeapon = nullptr;
+			DetachArrow();
 		}
 
 		AFPCharacter* FPCharacter = Cast<AFPCharacter>(IController->GetCharacter());
@@ -40,10 +42,12 @@ void ABow::Equip_Implementation(APlayerController* Controller)
 			SpawnParameters.Template = this;
 			if(auto* Spawned = IController->GetWorld()->SpawnActor<ABow>(ActorClassToSpawn,  FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters))
 			{
+				Spawned->PickupMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 				Spawned->AttachToActor(FPCharacter, FAttachmentTransformRules::KeepRelativeTransform);
 				Spawned->AttachToComponent(FPCharacter->Cam, FAttachmentTransformRules::KeepRelativeTransform);
 				Spawned->SetActorRelativeLocation(Position);
 				IController->ActiveWeapon = Spawned;
+				Spawned->AttachArrow();
 			}
 		}
 	}
@@ -55,6 +59,7 @@ bool ABow::CheckUnequip_Implementation(APlayerController* Controller)
 	{
 		if(ABow* Bow = Cast<ABow>(IController->ActiveWeapon))
 		{
+			Bow->DetachArrow();
 			IController->ActiveWeapon->Destroy();
 			IController->ActiveWeapon = nullptr;
 			return true;

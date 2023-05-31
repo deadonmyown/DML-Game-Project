@@ -9,7 +9,7 @@ AAxe::AAxe()
 {
 	AttackSphere = CreateDefaultSubobject<USphereComponent>(TEXT("AttackSphere"));
 	AttackSphere->SetupAttachment(RootComponent);
-	AttackSphere->SetSphereRadius(65.f);
+	AttackSphere->SetSphereRadius(35.f);
 
 	Name = "Axe";
 }
@@ -45,8 +45,9 @@ void AAxe::Equip_Implementation(APlayerController* Controller)
 			SpawnParameters.Template = this;
 			if(auto* Spawned = IController->GetWorld()->SpawnActor<AAxe>(ActorClassToSpawn,  FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters))
 			{
-				Spawned->AttachToActor(FPCharacter, FAttachmentTransformRules::KeepRelativeTransform);
-				Spawned->AttachToComponent(FPCharacter->Cam, FAttachmentTransformRules::KeepRelativeTransform);
+				Spawned->PickupMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+				Spawned->AttachToActor(FPCharacter, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
+				Spawned->AttachToComponent(FPCharacter->Cam, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
 				Spawned->SetActorRelativeLocation(Position);
 				IController->ActiveWeapon = Spawned;
 			}

@@ -2,12 +2,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ManPickup.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Actor.h"
 #include "Arrow.generated.h"
 
 UCLASS()
-class GAME_API AArrow : public AActor
+class GAME_API AArrow : public AManPickup
 {
 	GENERATED_BODY()
 
@@ -16,9 +17,6 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	USphereComponent* AttackSphere;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UStaticMeshComponent* Mesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	int Damage;

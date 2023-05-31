@@ -3,9 +3,11 @@
 
 AAutoPickup::AAutoPickup()
 {
+	DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>("DefaultSceneRoot");
+	RootComponent = DefaultSceneRoot;
 	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>("PickupMesh");
-	RootComponent = PickupMesh;
-
+	PickupMesh->SetupAttachment(RootComponent);
+	
 	ItemID = FName("No ID");
 }
 

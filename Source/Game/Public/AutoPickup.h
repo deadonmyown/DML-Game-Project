@@ -25,6 +25,9 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere)
+	USceneComponent* DefaultSceneRoot;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* PickupMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

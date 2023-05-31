@@ -26,6 +26,12 @@ public:
 
 	virtual void Use_Implementation(APlayerController* Controller) override;
 
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void AttachArrow();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void DetachArrow();
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<class AArrow> Arrow;
 };
